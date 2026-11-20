@@ -1,8 +1,38 @@
 
-from calculator import add, subtract
+name: Python CI Pipeline
 
-def test_addition():
-    assert add(10, 20) == 30
+on:
+  push:
+    branches:
+      - main
 
-def test_subtraction():
-    assert subtract(20, 10) == 10
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v5
+
+      - name: Set Up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Build Application
+        run: |
+          python -m py_compile calculator.py
+
+      - name: Run Automated Tests
+        run: |
+          python -m pytest -v
+
